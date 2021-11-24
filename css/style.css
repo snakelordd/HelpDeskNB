@@ -1,0 +1,58 @@
+html {
+	font-size: 24px;
+}
+
+header {
+/*	display: flex;
+	align-items: center;
+	justify-content: space-between;*/
+	background: grey;
+}
+
+.lk {
+	display: block;
+}
+
+/*.container {
+
+}*/
+
+.headerMenu {
+	margin-left: 0;
+	margin-right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+
+
+}
+
+header ul li {
+	display: inline-block;
+	list-style: none;
+}
+.TopMenu li{
+	/*margin: 10px;*/
+	
+
+	margin-left: 3%; 
+
+
+}
+
+.TopMenu a {
+	text-decoration: none;
+	color: black;
+}
+
+/*.logo {
+	display: block;
+}*/
+.search {
+	/*width: 400px;*/
+}
+
+.topmenu {
+	display: block;
+	/*width: 30%;*/
+}
