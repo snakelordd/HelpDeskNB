@@ -1,28 +1,39 @@
 html {
-	font-size: 24px;
+	font-size: 18px;
 }
 
 header {
 /*	display: flex;
 	align-items: center;
 	justify-content: space-between;*/
-	background: grey;
+	background: #d9d9d9;
+	box-shadow: 0 1px 5px #bfbfbf;
 }
 
+header a:hover {
+	color: white;
+/*	text-shadow: #666 1px 0 10px;*/
+}
 .lk {
-	display: block;
+	display: flex;
+	align-items: center;
+	width: 30%;
 }
 
+.search {
+	margin-right: 10%;
+	width: 60%;
+}
 /*.container {
 
 }*/
 
 .headerMenu {
-	margin-left: 0;
-	margin-right: 0;
+
 	display: flex;
 	align-items: center;
-	justify-content: space-around;
+	justify-content: space-between;
+	height: 50px;
 
 
 }
@@ -49,10 +60,34 @@ header ul li {
 	display: block;
 }*/
 .search {
-	/*width: 400px;*/
+
+/*width: 400px;*/
 }
 
-.topmenu {
+.TopMenu {
 	display: block;
+
+	margin: 0 0 0 0;
 	/*width: 30%;*/
+}
+
+.bi-person-fill {
+	font-size: 18px;
+}
+
+.nav_lk a{
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: black;
+}
+
+.nav_lk i {
+	font-size: 20px;
+}
+
+.user {
+	display: block;
+	margin-left: 5%;
+	width: 100px;
 }
