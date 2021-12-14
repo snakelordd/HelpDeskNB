@@ -1,24 +1,27 @@
+<?php include_once 'functions.php'; ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="js/bootstrap.bundle.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<script src="<?php echo get_url('js/bootstrap.bundle.js') ?>"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo get_url('css/bootstrap.css') ?>">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="<?php echo get_url('css/style.css') ?>">
 	<title>Helpdesk</title>
 </head>
 <body>
-	<header>
+<header>
 		<div class="container-fluid">
 			<div class="row row-cols-auto headerMenu">					
 				<div class="col-6">			
 					<ul class="TopMenu">						
-						<li><a href="#"><i class="bi bi-house-door"></i> Главная</a></li>
+						<li><a href="<?php echo get_url('index.php'); ?>"><i class="bi bi-house-door"></i> Главная</a></li>
 						<li><a href="#"><i class="bi bi-exclamation-square"></i> У меня проблема</a></li>
 						<li><a href="#"><i class="bi bi-journal"></i></i> Инструкции </a></li>
-						<li><a href="#"><i class="bi bi-plus-square"></i></i> Создать заявку</a></li>
+						<li><a href="<?php echo get_url('modules/newticket.php'); ?>"><i class="bi bi-plus-square"></i> Создать заявку</a></li>
 					</ul>
 				</div>
 				<div class="col lk">
@@ -44,7 +47,7 @@
 			</div>
 		</div>
 
-		
-	</header>
-</body>
-</html>
+</header>
+
+
+

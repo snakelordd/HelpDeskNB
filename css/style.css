@@ -3,9 +3,6 @@ html {
 }
 
 header {
-/*	display: flex;
-	align-items: center;
-	justify-content: space-between;*/
 	background: #d9d9d9;
 	box-shadow: 0 1px 5px #bfbfbf;
 }
@@ -24,18 +21,12 @@ header a:hover {
 	margin-right: 10%;
 	width: 60%;
 }
-/*.container {
-
-}*/
 
 .headerMenu {
-
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	height: 50px;
-
-
 }
 
 header ul li {
@@ -43,12 +34,7 @@ header ul li {
 	list-style: none;
 }
 .TopMenu li{
-	/*margin: 10px;*/
-	
-
 	margin-left: 3%; 
-
-
 }
 
 .TopMenu a {
@@ -56,19 +42,9 @@ header ul li {
 	color: black;
 }
 
-/*.logo {
-	display: block;
-}*/
-.search {
-
-/*width: 400px;*/
-}
-
 .TopMenu {
 	display: block;
-
 	margin: 0 0 0 0;
-	/*width: 30%;*/
 }
 
 .bi-person-fill {
@@ -91,3 +67,83 @@ header ul li {
 	margin-left: 5%;
 	width: 100px;
 }
+
+.page_header {
+	margin-top: 5%;
+}
+
+.page_header ul li {
+	list-style: none;
+}
+
+.ticketforms {
+	margin-bottom: 2%;
+}
+
+textarea {
+	resize: none;
+}
+
+.form-control, .form-select {
+	/*width: 900px;*/
+}
+.newticket {
+
+}
+
+.faq  {
+	display: none;
+	border-radius: 15px;
+	margin-top: 3%;
+	font-size: 14px;
+	margin-bottom: -3%;
+	width: 40%;
+
+	
+}
+
+
+.faq2 {
+	background-color: #CEE4C5;
+	border: 2px solid #6AA84F;
+
+}
+
+.faq1 {
+	background-color: #FFE599;
+	border: 2px solid #AA9044;
+}
+
+.mm {
+	width: 1%;
+	height: 1%;
+}
+
+.faqtab_warning {
+	font-size: 1.3em;
+	color: #7F6000;
+
+}
+
+.faqtab_advice {
+	font-size: 1.3em;
+	color: #274E13;
+}
+
+.faqtab_advice a {
+	color: #274E13;
+}
+
+.faqtab_advice ul {
+	padding-left: 0;
+}
+.faqtab_advice ul li {
+	list-style: none;
+
+}
+
+.faq_icon {
+	max-width: 40px;
+	width: 40px;
+}
+
