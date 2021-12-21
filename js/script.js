@@ -4,7 +4,7 @@ $(document).ready(function() {
 	var elem = $('.faq');
 
 	$(elem).hide();
-	$(elem[0]).show(800);
+	$(elem[0]).show(600);
 
 	$(closebtn).click(function() {
 
@@ -14,11 +14,13 @@ $(document).ready(function() {
 		$(this).closest('.faq').hide(500);
 
 		if ($(this).closest('.faq').attr('id') == 'faq_1') {
-		 	$('#faq_2').show(1300);
+		 	$('#faq_2').show(500);
 		}
 
 
 	});
+
+	//var submit_btn = $
 	
 
 

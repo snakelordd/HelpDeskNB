@@ -1,10 +1,16 @@
 <?php 
+session_start();
 
 include_once 'header.php';
 include_once 'tabs.php';
 $back = $_SERVER['HTTP_REFERER'];
+$message = $_SESSION["message"] ?? null;
+
+
+
 
 ?>
+
 <script type="text/javascript" src="<?php echo get_url("js/script.js")?>"></script>
 <div id="content">
 	<div class="container">
@@ -15,7 +21,7 @@ $back = $_SERVER['HTTP_REFERER'];
 					 			<li><a href="#">Link 3</a></li>
 					 			<li><a href="#">Link 4</a></li>
 					 		</ul>', '', 'Возможно вам помогут...'); } ?>
-		<?php if ($back == (get_url('modules/newticket.php'))) { tab_advice('Заявка успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>');}?>
+		<?php if ($back == (get_url('modules/newticket.php')) && $message == 'success') { tab_advice('Заявка успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>'); $message = null; unset($_SESSION['message']);}?>
 		 
 		<div class="row page_header">	
 			<ul>	
@@ -69,7 +75,7 @@ $back = $_SERVER['HTTP_REFERER'];
 						<div class="col-2"></div>
 						<div class="col">
 							<div class="mb-3">
-							  <button type="submit" class="btn btn-primary">Отправить</button>
+							  <button type="submit" class="btn btn-primary" id="submit_btn">Отправить</button>
 							</div>
 						</div>	
 					</div>
