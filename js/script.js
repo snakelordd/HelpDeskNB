@@ -20,6 +20,22 @@ $(document).ready(function() {
 
 	});
 
+$('form[id="newticket"]').validate({
+  rules: {
+    t_category: 'required',
+    t_theme: 'required',
+    t_describe: 'required'
+  },
+  messages: {
+    t_category: 'Пожалуйста, выберите категорию',
+    t_theme: 'Заполните это поле',
+    t_describe: 'Заполните это поле',
+  },
+  submitHandler: function(form) {
+    form.submit();
+  }
+});
+
 	//var submit_btn = $
 	
 

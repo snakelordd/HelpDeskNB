@@ -1,4 +1,6 @@
-<?php include_once 'functions.php'; ?>
+<?php include_once 'functions.php'; 
+session_start();
+?>
 
 
 <!DOCTYPE html>
@@ -33,11 +35,16 @@
 					<div class="nav_lk dropdown">
 						<a href="#" class=" dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="bi bi-person"></i>
-							<div class="user">Аптека 1</div>
+							<div class="user"><?php echo get_client_id($host); ?></div>
 							
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-						    <li><a class="dropdown-item" href="#">Мои заявки</a></li>
+							<?php 
+							if (get_client_id($host) == 'admin') {
+						    	echo '<li><a class="dropdown-item" href="#">Все заявки</a></li>';
+						    }
+						    else echo '<li><a class="dropdown-item" href="#">Мои заявки</a></li>'; 
+							?>
 						    <li><a class="dropdown-item" href="#">История заявок</a></li>
 						    <li><hr class="dropdown-divider"></li>
 						    <li><a class="dropdown-item disabled" href="#">Помощь</a></li>

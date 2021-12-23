@@ -5,23 +5,21 @@ include_once 'header.php';
 include_once 'tabs.php';
 $back = $_SERVER['HTTP_REFERER'];
 $message = $_SESSION["message"] ?? null;
-
-
-
-
 ?>
 
 <script type="text/javascript" src="<?php echo get_url("js/script.js")?>"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
 <div id="content">
 	<div class="container">
-		<?php if ($back != (get_url('modules/newticket.php'))) { tab_warning('Прежде чем создавать новую заявку, ознакомьтесь с существующими заявками и инструкцией. Возможно, ваша проблема уже имеет решение. Инструкции можете посмотреть здесь'); } ?>
+		<?php if ($back != (get_url('modules/newticket.php')) || $message == null) { tab_warning('Прежде чем создавать новую заявку, ознакомьтесь с существующими заявками и инструкцией. Возможно, ваша проблема уже имеет решение. Инструкции можете посмотреть здесь'); } ?>
 		<?php if ($back != (get_url('modules/newticket.php'))) { tab_advice('<ul>
 					 			<li><a href="#">Link 1</a></li>
 					 			<li><a href="#">Link 2</a></li>
 					 			<li><a href="#">Link 3</a></li>
 					 			<li><a href="#">Link 4</a></li>
 					 		</ul>', '', 'Возможно вам помогут...'); } ?>
-		<?php if ($back == (get_url('modules/newticket.php')) && $message == 'success') { tab_advice('Заявка успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>'); $message = null; unset($_SESSION['message']);}?>
+		<?php if ($back == (get_url('modules/newticket.php')) && $message == 'success') { tab_advice('Заявка успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>');  $_SESSION["message"] = null;}?>
 		 
 		<div class="row page_header">	
 			<ul>	
@@ -32,7 +30,7 @@ $message = $_SESSION["message"] ?? null;
 
 		<div class="row newticket">
 		 	<div class="col">
-		 		<form name = "newticket" method="post" action=" <?php echo get_url('modules/newticket_action.php')?>">
+		 		<form name = "newticket" id="newticket" method="post" action=" <?php echo get_url('modules/newticket_action.php')?>">
 					<div class="row ticketforms">
 					<div class="col-2"> Выберите категорию </div>
 						<div class="col">
