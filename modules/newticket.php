@@ -19,7 +19,7 @@ $message = $_SESSION["message"] ?? null;
 					 			<li><a href="#">Link 3</a></li>
 					 			<li><a href="#">Link 4</a></li>
 					 		</ul>', '', 'Возможно вам помогут...'); } ?>
-		<?php if ($back == (get_url('modules/newticket.php')) && $message == 'success') { tab_advice('Заявка успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>');  $_SESSION["message"] = null;}?>
+		<?php if ($back == (get_url('modules/newticket.php')) && $message == 'success') { tab_advice('Заявка #' . $_SESSION["t_id"] .' успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>');  $_SESSION["message"] = null;}?>
 		 
 		<div class="row page_header">	
 			<ul>	

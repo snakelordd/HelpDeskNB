@@ -35,15 +35,15 @@ session_start();
 					<div class="nav_lk dropdown">
 						<a href="#" class=" dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="bi bi-person"></i>
-							<div class="user"><?php echo get_client_id($host); ?></div>
+							<div class="user"><?php echo $_SESSION["host_id"]; ?></div>
 							
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 							<?php 
-							if (get_client_id($host) == 'admin') {
-						    	echo '<li><a class="dropdown-item" href="#">Все заявки</a></li>';
+							if ($_SESSION["host_id"] == 'admin') {
+						    	echo '<li><a class="dropdown-item" href="' . get_url('modules/mytickets.php') . '">Все заявки</a></li>';
 						    }
-						    else echo '<li><a class="dropdown-item" href="#">Мои заявки</a></li>'; 
+						    else echo '<li><a class="dropdown-item" href="' . get_url('modules/mytickets.php'). '">Мои заявки</a></li>'; 
 							?>
 						    <li><a class="dropdown-item" href="#">История заявок</a></li>
 						    <li><hr class="dropdown-divider"></li>

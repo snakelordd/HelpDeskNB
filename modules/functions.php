@@ -19,10 +19,9 @@ function submit_check() {
 	return true;
 }
 
-function insert_db($client_id, $t_category, $t_theme, $t_problem, $t_file = NULL) {
+function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = NULL) {
 
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-	// Check connection
 	if ($conn->connect_error) {
 	    die("Connection failed: " . $conn->connect_error);
 	}
@@ -34,8 +33,6 @@ function insert_db($client_id, $t_category, $t_theme, $t_problem, $t_file = NULL
 		$sql = "INSERT INTO tickets (client_id, ticket_category, ticket_theme, ticket_problem)
 		VALUES ('$client_id', '$t_category', '$t_theme', '$t_problem')";
 	}
-
-
 	if ($conn->query($sql) === TRUE) {
 	    return true; //echo "New record created successfully";
 	} else {
@@ -45,7 +42,36 @@ function insert_db($client_id, $t_category, $t_theme, $t_problem, $t_file = NULL
 	$conn->close();
 }
 
-function get_status() {}
+function get_ticket($client_id) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+		die("connction failed: " . $conn->connect_error);
+	}
+	$sql = "SELECT * FROM `tickets` WHERE `client_id` =  '$client_id' ";
+	$result = mysqli_query($conn, $sql);
+	$conn->close();
+	return $result;
+
+}
+function get_tid($client_id, $t_category, $t_theme, $t_problem) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	$sql = "SELECT `ticket_id` FROM `tickets` WHERE `client_id` = '$client_id' AND `ticket_category` = '$t_category' 
+												AND `ticket_theme` = '$t_theme' AND `ticket_problem` = '$t_problem'";
+	$result = mysqli_query($conn, $sql);
+	$row = mysqli_fetch_array($result);
+	$ticket_id = $row['ticket_id'];
+	$conn->close();
+	return $ticket_id;
+
+}
+function get_tstatus($t_id) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	$sql = "SELECT `ticket_status` FROM `tickets` WHERE `ticket_id` =  '$t_id' ";
+	$result = mysqli_query($conn, $sql);
+	$row = mysqli_fetch_array($result);
+	$t_status = $row['ticket_status']; 
+	return $t_status;
+}
 
 
 function set_status() {}
@@ -90,21 +116,38 @@ function set_client_id($ip, $id) {
 }
 
 function auth($host) {
-	if ($_SESSION["host"] == $host) {
-		$_SESSION["auth"] = true;
-		return true;
+	if (isset($_SESSION["host"])) {		
+		if ($_SESSION["host"] == $host) {
+			$_SESSION["host_id"] = get_client_id($host);
+			$_SESSION["auth"] = true;
+			return true;
+		}
+		else {
+			if (get_client_id($host)) {
+				$_SESSION["host"] = $host;
+				$_SESSION["host_id"] = get_client_id($host);
+				$_SESSION["auth"] = true;
+				return true;
+			}
+			else { 
+				$_SESSION["auth"] = false;
+				return false;
+			}
+		}
 	}
 	else {
 		if (get_client_id($host)) {
 			$_SESSION["host"] = $host;
+			$_SESSION["host_id"] = get_client_id($host);
 			$_SESSION["auth"] = true;
 			return true;
-		}
+			}
 		else { 
 			$_SESSION["auth"] = false;
 			return false;
 		}
 	}
+	
 }
 
 ?>

@@ -151,3 +151,11 @@ textarea {
 	font-size: 1.4em;
 	text-align: center;
 }
+
+.ticket-title {
+	background-color: #F3F3F3;
+}
+
+.ticket-date {
+	font-size: 0.7em;
+}

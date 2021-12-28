@@ -10,18 +10,19 @@ include_once 'functions.php';
   $t_describe = htmlspecialchars(trim($_POST['t_describe']));
   $t_file =  htmlspecialchars(trim($_POST['t_inputfile']));
   $location = get_url("modules/newticket.php");
-  $client_id = $_SESSION["host"];
-
+  $client_id = $_SESSION["host_id"];
 
   if (isset($_SESSION["host"]) && $_SESSION["auth"] == true) {
-    if (insert_db($client_id, $t_category, $t_theme, $t_describe, $t_file)) {
+    if (insert_ticket($client_id, $t_category, $t_theme, $t_describe, $t_file)) {
     		$message = 'success';
     		$_SESSION["message"] = $message;
+        $_SESSION["t_id"] = get_tid($client_id, $t_category, $t_theme, $t_describe);
+        //echo $_SESSION["t_id"];
     		if (submit_check()) {
   	  		//header("Location: $location");
-  	  		header("Location: {$_SERVER["HTTP_REFERER"]}");
-  	  		exit;
-  		}
+  	  		 header("Location: {$_SERVER["HTTP_REFERER"]}");
+  	  		 exit;
+  		  }
     }
     else $message = 'error';
     }
