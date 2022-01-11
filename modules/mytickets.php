@@ -28,9 +28,10 @@ include_once 'header.php';
 					    Сортировать
 					  </button>
 					  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-					    <li><a class="dropdown-item" href="#">по дате</a></li>
-					    <li><a class="dropdown-item" href="#">по категориям</a></li>
-					    <li><a class="dropdown-item" href="#">по статусу заявки</a></li>
+					    <li><a class="dropdown-item" href=" <?php echo get_url('modules/mytickets.php');?>?sort=date">по дате</a></li>
+					    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=priority">по приоритету</a></li>
+					    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=category">по категориям</a></li>
+					    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=status">по статусу заявки</a></li>
 					  </ul>
 					</div>	
 				</div>	
@@ -104,3 +105,10 @@ include_once 'header.php';
 			</div> -->
 		</DIV>
 	</DIV>
+	<script type="text/javascript">
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  			return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+	</script>
+	<script type="text/javascript" src="<?php echo get_url("js/setpriority.js")?>"></script>

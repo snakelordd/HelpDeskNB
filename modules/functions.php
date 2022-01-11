@@ -47,16 +47,69 @@ function get_ticket($client_id) {
 	if ($conn->connect_error) {
 		die("connction failed: " . $conn->connect_error);
 	}
-	$sql = "SELECT * FROM `tickets` WHERE `client_id` =  '$client_id' ";
+
+	$sql = "SELECT * FROM `tickets` WHERE `client_id` =  '$client_id'";
+	
 	$result = mysqli_query($conn, $sql);
 	$conn->close();
 	return $result;
-
 }
+
+function get_allTickets($sql=null) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+		die("connction failed: " . $conn->connect_error);
+		echo 'err2';
+	}
+	if ($sql==null) {
+		$sql = "SELECT * FROM `tickets`";
+	}
+	$result = mysqli_query($conn, $sql);
+	$conn->close();
+	return $result;
+}
+function sortby() {
+	if (!isset($_GET['sort'])) {
+		$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
+		$result = get_allTickets($sql);
+		if (!$result) {
+			echo 'err';
+		}
+		return $result;
+	}
+	switch ($_GET['sort']) {
+		case 'date':
+			$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
+			$result = get_allTickets($sql);
+			return $result;
+			break;
+		case 'priority':
+			$sql = "SELECT * FROM `tickets` ORDER BY ticket_priority, t_date DESC";
+			$result = get_allTickets($sql);
+			return $result;
+			break;
+		case 'priority':
+			$sql = "SELECT * FROM `tickets` ORDER BY ticket_category";
+			$result = get_allTickets($sql);
+			return $result;
+			break;
+		case 'status':
+			$sql = "SELECT * FROM `tickets` ORDER BY ticket_status, t_date DESC";
+			$result = get_allTickets($sql);
+
+			return $result;
+			break;
+		default:
+			$result = get_allTickets();
+			return $result;
+			break;
+	}
+}
+
 function get_tid($client_id, $t_category, $t_theme, $t_problem) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	$sql = "SELECT `ticket_id` FROM `tickets` WHERE `client_id` = '$client_id' AND `ticket_category` = '$t_category' 
-												AND `ticket_theme` = '$t_theme' AND `ticket_problem` = '$t_problem'";
+												AND `ticket_theme` = '$t_theme' AND `ticket_problem` = '$t_problem' ";
 	$result = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_array($result);
 	$ticket_id = $row['ticket_id'];
@@ -82,6 +135,9 @@ function get_ip() {
 
 function get_client_id($ip) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
 
 	$sql = "SELECT `client_id` FROM `clients` WHERE `client_ip` =  '$ip' ";
 	$result = mysqli_query($conn, $sql);
@@ -113,6 +169,22 @@ function set_client_id($ip, $id) {
 	}
 
 	$conn->close();
+}
+
+function set_priority($priority, $ticket_id) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	$sql = "UPDATE tickets SET ticket_priority = '$priority' WHERE ticket_id = '$ticket_id'";
+
+	if ($conn->query($sql) === TRUE) {
+	return true; //echo "New record created successfully";
+	} else {
+	    echo "Error: " . $sql . "<br>" . $conn->error;
+	}
+	$conn->close();
+
 }
 
 function auth($host) {
