@@ -2,6 +2,9 @@ html {
 	font-size: 18px;
 }
 
+.content {
+
+}
 header {
 	background: #d9d9d9;
 	box-shadow: 0 1px 5px #bfbfbf;
@@ -102,7 +105,6 @@ textarea {
 	
 }
 
-
 .faq2 {
 	background-color: #CEE4C5;
 	border: 2px solid #6AA84F;
@@ -151,11 +153,89 @@ textarea {
 	font-size: 1.4em;
 	text-align: center;
 }
+.checked {
+	color: #0B5394;
+
+}
+.checked a {
+	color: #222;
+	text-decoration: none;
+}
+
+.ticket_id {
+	font-size: 1.1em;
+
+}
+
+.ticket_id a {
+	color: #0B5394;
+}
+
+.new {
+
+}
+
+.new a{
+
+	color: #0B5394;
+	text-decoration: none;
+
+}
 
 .ticket-title {
-	background-color: #F3F3F3;
+	margin-left: 30px;
+	color: #666666;
+
 }
+
+
+
+.ticket-title a {
+	color: black;
+
+}
+
+.ticket-date a {
+	color: #0B5394;
+}
+
+.new .ticket_list a{
+	color: black;
+	font-weight: 600;
+}
+
+
 
 .ticket-date {
 	font-size: 0.7em;
+}
+
+.shortline {
+	width: 40%;
+	opacity: 0;
+	margin-top: 3%;
+}
+
+.ticket {
+	margin-bottom: 10px;
+	transition: background 0.1s ease;
+}
+.ticket:hover {
+	background-color: #eee;
+	cursor: pointer;
+}
+
+.ticket_list {
+	margin-left: 18px;
+	color: #666666;
+}
+
+.notification-new {
+	font-size: 0.5em;
+	margin-left: 10px;
+	color: #CC0000;
+}
+
+.notification-checked {
+	display: none;
 }

@@ -1,7 +1,27 @@
 <?php
 
+session_start();
+include_once 'functions.php';
+if (isset($_SESSION['host']) && isset($_SESSION['host_id'])) {
+	if ($_SESSION['host'] !== get_ip() || $_SESSION['auth'] == false) {
+		$_SESSION['host'] = null;
+		$_SESSION['auth'] = false;
+		$location = get_url('index.php');
+		header("Location: $location");
+	  	exit;
+	}
+}
+else {
+	$location = get_url('index.php');
+	header("Location: $location");
+	exit;
+}
 
 include_once 'header.php';
+
+if (isset($_GET['sort'])) {
+	$_SESSION['sort'] = $_GET['sort'];
+}
 
 ?>
 
@@ -16,8 +36,7 @@ include_once 'header.php';
 			<div class="row">
 				<nav aria-label="breadcrumb">
 				  <ol class="breadcrumb">
-				    <li class="breadcrumb-item"><a href="#">Все заявки</a></li>
-				    <li class="breadcrumb-item active" aria-current="page">Заявка #xxx</li>
+				    <li class="breadcrumb-item"><a href="<?php echo get_url('modules/mytickets.php') ?>">Все заявки</a></li>
 				  </ol>
 				</nav>
 			</div>
@@ -32,6 +51,10 @@ include_once 'header.php';
 					    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=priority">по приоритету</a></li>
 					    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=category">по категориям</a></li>
 					    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=status">по статусу заявки</a></li>
+					    <?php if (get_client_id($_SESSION['host']) == 'admin') { 
+					    	echo '<li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="' . get_url('modules/mytickets.php') . '?sort=author">по автору</a></li>';
+
+					    } ?>
 					  </ul>
 					</div>	
 				</div>	
@@ -49,60 +72,15 @@ include_once 'header.php';
 					    
 <!-- 					  </div>
 					</div> -->
-				</div>
-				<p></p>		
+				</div>	
+				<hr class="shortline">	
 			</div>		
 			<?php include_once 'oneticket.php'; ?>	
-<!-- 			<div class="row ticket">
-				<div class="col">
-					<div class="list-group">
-						<ul class="ticket list-group">
-							<li class="list-group-item ticket-title d-flex justify-content-between align-items-start">
-							    <div class="ticket_info">
-							    	<div class="row">
-							    		<div class="col-auto">
-									    	<div class="ticket_id">
-									    		Заявка #xxx
-									    	</div> 
-									    	<div class="ticket-date">
-									    		<div class="row">
-									    			<div class="col-auto">
-											    		<div class="date">
-											    			DD.MM.YY
-											    		</div>									    				
-									    			</div>
-									    			<div class="col-auto">
-									    				<div class="ticket-category">
-															Категория:
-														</div>							
-									    			</div>
-									    		</div>			    				    		
-									    	</div>		
-							    		</div>
-							    	</div>
+				<!-- Ticket -->
 
+					
 
-							    </div>
-
-							    <span class="badge bg-primary rounded-pill">Закрыт</span>
-							</li>
-							<li class="description list-group-item">
-								description
-							</li>
-							
-						</ul>
-					</div>
-				</div>
- 				<div class="col-2">
-					<ul class="list-group">
-					  <li class="list-group-item">Элемент</li>
-					  <li class="list-group-item">Второй элемент</li>
-					  <li class="list-group-item">Третий элемент</li>
-					  <li class="list-group-item">Четвертый элемент</li>
-					  <li class="list-group-item">И пятый</li>
-					</ul>
-				</div> 
-			</div> -->
+				<!--  -->
 		</DIV>
 	</DIV>
 	<script type="text/javascript">

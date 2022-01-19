@@ -42,16 +42,38 @@ function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = 
 	$conn->close();
 }
 
-function get_ticket($client_id) {
+function get_ticket($client_id, $sql = null) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	if ($conn->connect_error) {
 		die("connction failed: " . $conn->connect_error);
 	}
-
-	$sql = "SELECT * FROM `tickets` WHERE `client_id` =  '$client_id'";
+	if ($sql == null) {
+		$sql = "SELECT * FROM `tickets` WHERE `client_id` =  '$client_id'";
+	}
 	
 	$result = mysqli_query($conn, $sql);
-	$conn->close();
+	if(mysqli_num_rows($result) > 0)
+	{
+	    $conn->close();
+	    return $result;
+	}
+	else {
+		$conn->close();
+		return 'empty';
+	}	
+}
+
+function get_one_ticket($id) {
+	if ($id == null) {
+		die;
+	}
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+		die("connction failed: " . $conn->connect_error);
+		echo 'err2';
+	}
+	$sql = "SELECT * FROM `tickets` WHERE `ticket_id` =  '$id'";
+	$result = mysqli_query($conn, $sql);
 	return $result;
 }
 
@@ -69,7 +91,16 @@ function get_allTickets($sql=null) {
 	return $result;
 }
 function sortby() {
-	if (!isset($_GET['sort'])) {
+
+	$host = $_SESSION['host_id'];
+
+	if (isset($_GET['sort'])) {
+		$sort = $_GET['sort'];
+	}
+	else if (isset($_SESSION['sort'])) {
+		$sort = $_SESSION['sort'];
+	}
+	else {
 		$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
 		$result = get_allTickets($sql);
 		if (!$result) {
@@ -77,30 +108,69 @@ function sortby() {
 		}
 		return $result;
 	}
-	switch ($_GET['sort']) {
+	switch ($sort) {
 		case 'date':
-			$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
-			$result = get_allTickets($sql);
+			
+			if ($_SESSION['host_id'] == 'admin') {
+				$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
+				$result = get_allTickets($sql);
+			}
+			else {
+				$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY t_date DESC";
+				$result = get_ticket($host, $sql);
+			}
 			return $result;
 			break;
 		case 'priority':
-			$sql = "SELECT * FROM `tickets` ORDER BY ticket_priority, t_date DESC";
-			$result = get_allTickets($sql);
+			
+			if ($_SESSION['host_id'] == 'admin') {
+				$sql = "SELECT * FROM `tickets` ORDER BY ticket_priority  DESC";
+				$result = get_allTickets($sql);
+			}
+			else {
+				$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY ticket_priority DESC";
+				$result = get_ticket($host, $sql);
+			}
 			return $result;
 			break;
-		case 'priority':
-			$sql = "SELECT * FROM `tickets` ORDER BY ticket_category";
-			$result = get_allTickets($sql);
+		case 'category':
+			
+			if ($_SESSION['host_id'] == 'admin') {
+				$sql = "SELECT * FROM `tickets` ORDER BY ticket_category, t_date";
+				$result = get_allTickets($sql);
+			}
+			else {
+				$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY ticket_category, t_date";
+				$result = get_ticket($host, $sql);
+			}
 			return $result;
 			break;
 		case 'status':
-			$sql = "SELECT * FROM `tickets` ORDER BY ticket_status, t_date DESC";
-			$result = get_allTickets($sql);
-
+			
+			if ($_SESSION['host_id'] == 'admin') {
+				$sql = "SELECT * FROM `tickets` ORDER BY ticket_status, t_date DESC";
+				$result = get_allTickets($sql);
+			}
+			else {
+				$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY ticket_status, t_date DESC";
+				$result = get_ticket($host, $sql);
+			}
+			return $result;
+			break;
+		case 'author':
+			
+			if ($_SESSION['host_id'] == 'admin') {
+				$sql = "SELECT * FROM `tickets` ORDER BY client_id, t_date DESC";
+				$result = get_allTickets($sql);
+			}
+			else {
+				$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY client_id, t_date DESC";
+				$result = get_ticket($host, $sql);
+			}
 			return $result;
 			break;
 		default:
-			$result = get_allTickets();
+			$result = get_ticket($_SESSION['host_id']);
 			return $result;
 			break;
 	}

@@ -1,15 +1,27 @@
 <?php
 include_once 'functions.php';
 
-
-$result = sortby();
-
+if (isset($_POST['id'])) {
+	$id = $_POST['id'];
+	$result = get_one_ticket($id);
+}
 if ($result == 'empty') {
 	echo '<div class="row"><div class="col"><p>Заявок не найдено</p></div></div>';
 	exit;
 }
+if (isset($_POST['priority'])) {
+	$priority = $_POST['priority'];
+}
+if ($id && $priority ) {
+			if (set_priority($priority, $id)) {
+				
+			}
+			//echo $_GET['setpriority'];
+			$_GET['setpriority'] = null;
+			$_GET['ticketid'] = null;
+			//$result = sortby();
+		}
 
-//var_dump($result);
 while ($row = $result->fetch_assoc())
    {
    	$priority = $row['ticket_priority'];
@@ -29,11 +41,11 @@ while ($row = $result->fetch_assoc())
 	if ($status !== 'new') {
 		$status = 'checked';
 	}
-       echo '			<div class="row ticket ' . $status . '" id="t_' . $row['ticket_id'] . '">
+       echo '			<div class="row ticket ' . $status . '" id="t_' . $row['ticket_id'] .'" onClick="myFu(' . $row['ticket_id'] .'); return fasle;">
 				<div class="col">
 					<p></p>
 					<div class="list-group">
-						<ul class="ticket list-group" id="">
+						<ul class="ticket list-group" id=" ' . $row['ticket_id'] . ' ">
 							<li class="  d-flex justify-content-between align-items-start">
 							    <div class="ticket_info">
 							    	<div class="row">
@@ -62,9 +74,9 @@ while ($row = $result->fetch_assoc())
 										  </a>
 									
 									  		<ul class="dropdown-menu" id=" ' . $row['ticket_id'] .   ' " aria-labelledby="dropdownMenuLink">
-									  			<li onClick="myFu(' . $row['ticket_id'] .', 1); return fasle;"><a class="dropdown-item 1"  href="">Низкий</i> </a></li>
-									    		<li onClick="myFu(' . $row['ticket_id'] .', 2); return fasle;"><a class="dropdown-item 2 "  href="">Средний</i> </a></li>
-									   			<li onClick="myFu(' . $row['ticket_id'] .', 3); return fasle;"><a class="dropdown-item 3"  href="">Высокий</i> </a> </li>
+									  			<li ><a class="dropdown-item 1"  href="' . get_url('modules/mytickets.php') .'/?setpriority=1&ticketid=' . $row['ticket_id'] . '">Низкий</i> </a></li>
+									    		<li><a class="dropdown-item 2 "  href="' . get_url('modules/mytickets.php') .'/?setpriority=2&ticketid=' . $row['ticket_id'] . '">Средний</i> </a></li>
+									   			<li ><a class="dropdown-item 3"  href="' . get_url('modules/mytickets.php') .'/?setpriority=3&ticketid=' . $row['ticket_id'] . '">Высокий</i> </a></li>
 									  		</ul>
 										</div>
 
@@ -104,17 +116,4 @@ while ($row = $result->fetch_assoc())
 			</div>
 			
 			';
-		
-		
-		if (isset($_GET['setpriority']) && $_GET['ticketid'] ) {
-			if (set_priority($_GET['setpriority'], $_GET['ticketid'])) {
-				
-			}
-			//echo $_GET['setpriority'];
-			$_GET['setpriority'] = null;
-			$_GET['ticketid'] = null;
-			//$result = sortby();
-		}
-   }
-
-
+	}
