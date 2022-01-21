@@ -1,10 +1,10 @@
-function myFu(id, priority){
+function myFu(id, priority, status){
         $.ajax({
         	type: "POST",
         	url: "/modules/get_ticket.php/", // Скрипт который будет делать выборку по нужному id
         	dataType: "text", // это прочитаете в мануалах
         	timeout: 50000, // это тоже
-        	data:{id:id, priority:priority}, // передаем пхп скрипту нужный id города
+        	data:{id:id, priority:priority, status:status}, // передаем пхп скрипту нужный id города
         	success: function(data) {
         	                $('#t_'+id).html('<div>'+data+'</div>'); // Собственно, добавляем результат на страниуцу
         	},
@@ -14,7 +14,22 @@ function myFu(id, priority){
     	});
 }
 
+// function setStatus(id, status){
 
+//         $.ajax({
+//         	type: "POST",
+//         	url: "/modules/get_ticket.php/", // Скрипт который будет делать выборку по нужному id
+//         	dataType: "text", // это прочитаете в мануалах
+//         	timeout: 50000, // это тоже
+//         	data:{id:id, status:status}, // передаем пхп скрипту нужный id города
+//         	success: function(data) {
+//         	                $('#t_'+id).html('<div>'+data+'</div>'); // Собственно, добавляем результат на страниуцу
+//         	},
+//         	error: function(request, status, errorT) {
+//         	     alert('Произошел сбой. Запрос не может быть выполнен. Повторите попытку.');
+//         	}
+//     	});
+// }
 
 
 

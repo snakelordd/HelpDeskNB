@@ -197,7 +197,21 @@ function get_tstatus($t_id) {
 }
 
 
-function set_status() {}
+function set_status($id, $status) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	$sql = "UPDATE tickets SET ticket_status = '$status' WHERE ticket_id = '$id'";
+
+	if ($conn->query($sql) === TRUE) {
+	return true; //echo "New record created successfully";
+	} else {
+	    echo "Error: " . $sql . "<br>" . $conn->error;
+	}
+	$conn->close();
+
+}
 
 function get_ip() {
 	return $_SERVER['REMOTE_ADDR'];

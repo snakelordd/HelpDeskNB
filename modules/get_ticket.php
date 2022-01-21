@@ -12,19 +12,22 @@ if ($result == 'empty') {
 if (isset($_POST['priority'])) {
 	$priority = $_POST['priority'];
 }
+if (isset($_POST['status'])) {
+	$status = $_POST['status'];
+}
 if ($id && $priority ) {
-			if (set_priority($priority, $id)) {
-				
-			}
-			//echo $_GET['setpriority'];
-			$_GET['setpriority'] = null;
-			$_GET['ticketid'] = null;
-			//$result = sortby();
-		}
+			if (set_priority($priority, $id)) {}
+}
 
-while ($row = $result->fetch_assoc())
-   {
-   	$priority = $row['ticket_priority'];
+if ($id && $status ) {
+		if (set_status($id, $status)) {
+		}
+}
+//while $row = $result->fetch_assoc())
+    $row = $result->fetch_assoc();
+   	//$id = $row['ticket_id'];
+   	//$status = $row['ticket_status'];
+   	//$priority = $row['ticket_priority'];
 	if ($priority == 1) {
 		$priority = 'low';
  	//$priority = '<i class="bi bi-exclamation-circle low" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i>';
@@ -39,13 +42,13 @@ while ($row = $result->fetch_assoc())
 	}
 	$status = $row['ticket_status'];
 	if ($status !== 'new') {
-		$status = 'checked';
+		$status_check = 'checked';
 	}
-       echo '			<div class="row ticket ' . $status . '" id="t_' . $row['ticket_id'] .'" onClick="myFu(' . $row['ticket_id'] .'); return fasle;">
+       echo '			<div class="row ticket ' . $status_check . '" id="t_' . $row['ticket_id'] . '">
 				<div class="col">
 					<p></p>
 					<div class="list-group">
-						<ul class="ticket list-group" id=" ' . $row['ticket_id'] . ' ">
+						<ul class="ticket list-group" id="">
 							<li class="  d-flex justify-content-between align-items-start">
 							    <div class="ticket_info">
 							    	<div class="row">
@@ -57,13 +60,13 @@ while ($row = $result->fetch_assoc())
 							    		</div>
 							    	</div>
 							    	<div class="row ticket-title ticket_list">
-										<a class="' . $status . '"href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '">' .  $row['ticket_theme']  .
+										<a class="' . $status_check . '"href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '">' .  $row['ticket_theme']  .
 									'</div>
 							    </div>
 							    <div>
 							    	<div class="row ticket-priority">
 
-							    		<div class="dropstart col-auto" id="t_' . $row['ticket_id'] . '">
+							    		<div class="dropstart col-auto" id="">
 
 										  <a class=" " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
 								    		<i class="bi bi-exclamation-circle priority ' . $priority . '" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i>
@@ -73,23 +76,40 @@ while ($row = $result->fetch_assoc())
 								    		</style>
 										  </a>
 									
-									  		<ul class="dropdown-menu" id=" ' . $row['ticket_id'] .   ' " aria-labelledby="dropdownMenuLink">
-									  			<li ><a class="dropdown-item 1"  href="' . get_url('modules/mytickets.php') .'/?setpriority=1&ticketid=' . $row['ticket_id'] . '">Низкий</i> </a></li>
-									    		<li><a class="dropdown-item 2 "  href="' . get_url('modules/mytickets.php') .'/?setpriority=2&ticketid=' . $row['ticket_id'] . '">Средний</i> </a></li>
-									   			<li ><a class="dropdown-item 3"  href="' . get_url('modules/mytickets.php') .'/?setpriority=3&ticketid=' . $row['ticket_id'] . '">Высокий</i> </a></li>
+									  		<ul class="dropdown-menu" id=" " aria-labelledby="dropdownMenuLink">
+									  			<li ' . ajax($id, '1', $status) . '><a class="dropdown-item 1"  href=" ">Низкий</i> </a></li>
+									    		<li ' . ajax($id, '2', $status) . '><a class="dropdown-item 2 "  href=" ">Средний</i> </a></li>
+									   			<li ' . ajax($id, '3', $status) . '><a class="dropdown-item 3"  href=" ">Высокий</i> </a> </li>
 									  		</ul>
 										</div>
 
 
 							    		
 							    		<div class="col">
-							    			<span class="badge bg-primary rounded-pill">' . $row['ticket_status'] . '</span>
+							    			<div class="dropdown col-auto" id="">
+	
+											  <a class=" " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+								    			<span class="badge bg-primary rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Изменить статус заявки">' . $row['ticket_status'] .'</span>
+								    			<style>
+								    				.middle { color: #F1C232;}
+								    				.high { color: #CC0000;}
+								    			</style>
+											  </a>
+										
+									  			<ul class="dropdown-menu" id="" aria-labelledby="dropdownMenuLink">									  				
+									    			
+									   				<li ' . ajax($id, $priority, 'Введен') . '><a class="dropdown-item"  href=" "><span class="badge rounded-pill bg-warning text-dark">Введен</span> </a></li>
+									   				<li ' . ajax($id, $priority, 'Закрыт') . '><a class="dropdown-item" data-bs-toggle="modal" href="#statusCloseModal" role="button"><span class="badge bg-success">Закрыт</span> </a></li>
+									   				<li ' . ajax($id, $priority, 'Отложен') . '><a class="dropdown-item"  href=" "><span class="badge bg-secondary">Отложен</span> </a></li>
+									   				<li ' . ajax($id, $priority, 'Отклонен') . '><a class="dropdown-item"  href=" "><span class="badge rounded-pill bg-danger">Отклонен</span> </a></li>
+									  			</ul>
+											</div>
 							    		</div>
 							    	</div>
 							    </div>
 							</li>
 							<li class="description  d-flex justify-content-between align-items-start">						
-									<div class="ticket-date ticket-title ' . $status . '">
+									<div class="ticket-date ticket-title ' . $status_check . '">
 									    <div class="row">
 									    	<div class="col-auto">
 												<div class="date">
@@ -116,4 +136,3 @@ while ($row = $result->fetch_assoc())
 			</div>
 			
 			';
-	}
