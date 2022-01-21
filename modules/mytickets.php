@@ -27,61 +27,18 @@ if (isset($_GET['sort'])) {
 
 	<DIV class="content">
 		<DIV class="container">
-			<div class="modal " id="statusCloseModal" aria-hidden="true" aria-labelledby="statusCloseModal">
-			  <div class="modal-dialog modal-dialog-centered modal-lg" >
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <h5 class="modal-title">Закрыть заявку</h5>
-			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			      </div>
-			      <div class="modal-body">
-			        <div class="row">
-						<div class="col-3">
-							<select class="form-select" id="t_category" name="t_category" aria-label="Default select example">
-							  <option selected >Резолюция</option>
-							  <option value="fixed">Исправлено</option>
-							  <option value="consultated">Консультация</option>
-							  <option value="Other">Three</option>
-							</select>				
-						</div>	
-						<div class="col">
-							<div class="mb-3">
- 								<input type="email" class="form-control"  placeholder="Комментарий (необязательно)">
-							</div>
-						</div>
-					</div>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-			        <a class="btn btn-success" href="<?php echo get_url('modules/mytickets.php') .'/?setstatus=close&ticketid=' . $row['ticket_id']; ?> " onClick="show_alert(); return false;">Закрыть заявку</a>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-
 			<div class="row page_header">	
 				<ul>	
 					<li><h3><i class="bi bi-list-task"></i> Все заявки   </h3></li>
 					<li><hr></li>
 				</ul>	
 			</div>	
-
 			<div class="row">
 				<nav aria-label="breadcrumb">
 				  <ol class="breadcrumb">
 				    <li class="breadcrumb-item"><a href="<?php echo get_url('modules/mytickets.php') ?>">Все заявки</a></li>
 				  </ol>
 				</nav>
-			</div>
-
-			<div class="row">
-				<div class="col">
-					<div class="alert alert-success alert-dismissible fade show faq" role="alert">
-					  Статус заявки успешно изменен
-					  <button type="button" class="btn-close"></button>
-					</div>
-					
-				</div>
 			</div>
 			<div class="row">
 				<div class="col-auto">
@@ -99,7 +56,6 @@ if (isset($_GET['sort'])) {
 
 					    } ?>
 					  </ul>
-					  <p></p>
 					</div>	
 				</div>	
 				<div class="col-auto">
@@ -117,10 +73,9 @@ if (isset($_GET['sort'])) {
 <!-- 					  </div>
 					</div> -->
 				</div>	
-					
+				<hr class="shortline">	
 			</div>		
-			 <?php include_once 'oneticket.php'; ?>	 
-			<!-- <?php $id=25; $priority = 3; $result = get_one_ticket($id); include_once 'get_ticket.php';  ?> -->
+			<?php include_once 'oneticket.php'; ?>	
 				<!-- Ticket -->
 
 					
@@ -135,4 +90,3 @@ if (isset($_GET['sort'])) {
 		})
 	</script>
 	<script type="text/javascript" src="<?php echo get_url("js/setpriority.js")?>"></script>
-	<script type="text/javascript" src="<?php echo get_url('js/alert_script.js');?>"></script>

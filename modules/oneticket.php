@@ -9,16 +9,14 @@ if ($result == 'empty') {
 	exit;
 }
 
-function ajax($id, $priority, $status) {
-	$result = 'onClick=\"myFu(' . $id .  $priority . $status . '); return false;\"';
-	return $result;
-}
 //var_dump($result);
 while ($row = $result->fetch_assoc())
    {
-   	$id = $row['ticket_id'];
-   	$status = $row['ticket_status'];
+
+   	$ticket_id = $row['ticket_id'];
    	$priority = $row['ticket_priority'];
+   	$ticket_priority = $row['ticket_priority'];
+   	$ticket_status = $row['ticket_status'];
 	if ($priority == 1) {
 		$priority = 'low';
  	//$priority = '<i class="bi bi-exclamation-circle low" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i>';
@@ -31,11 +29,32 @@ while ($row = $result->fetch_assoc())
 		$priority = 'high';
 		//$priority = '<i class="bi bi-exclamation-circle-fill high" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i><style>.high { color: #CC0000;}</style>';
 	}
-	$status = $row['ticket_status'];
-	if ($status !== 'new') {
-		$status_check = 'checked';
+	
+	if ($ticket_status !== 'Открыт') {
+		$status = 'checked';
 	}
-       echo '			<div class="row ticket ' . $status_check . '" id="t_' . $row['ticket_id'] . '">
+	else ($status = 'new');
+	switch ($ticket_status) {
+		case 'Открыт':
+			$badge = 'bg-primary rounded-pill';
+			break;
+		case 'Закрыт':
+			$badge = 'bg-success';
+			break;
+		case 'Отложен':
+			$badge = 'bg-warning text-dark';
+			break;
+		case 'Отклонен':
+			$badge = 'bg-danger';
+			break;	
+		case 'Введен':
+			$badge = 'bg-secondary';
+			break;	
+		default:
+			//$badge = 'bg-primary rounded-pill';
+			break;
+	}
+       echo '			<div class="row ticket ' . $status . '" id="t_' . $row['ticket_id'] . '">
 				<div class="col">
 					<p></p>
 					<div class="list-group">
@@ -51,13 +70,13 @@ while ($row = $result->fetch_assoc())
 							    		</div>
 							    	</div>
 							    	<div class="row ticket-title ticket_list">
-										<a class="' . $status_check . '"href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '">' .  $row['ticket_theme']  .
+										<a class="' . $status . '"href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '">' .  $row['ticket_theme']  .
 									'</div>
 							    </div>
 							    <div>
 							    	<div class="row ticket-priority">
 
-							    		<div class="dropstart col-auto" id="">
+							    		<div class="dropstart col-auto">
 
 										  <a class=" " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
 								    		<i class="bi bi-exclamation-circle priority ' . $priority . '" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i>
@@ -67,40 +86,36 @@ while ($row = $result->fetch_assoc())
 								    		</style>
 										  </a>
 									
-									  		<ul class="dropdown-menu" id=" " aria-labelledby="dropdownMenuLink">
-									  			<li ' . ajax($id, '1', $status) . '><a class="dropdown-item 1"  href=" ">Низкий</i> </a></li>
-									    		<li ' . ajax($id, '2', $status) . '><a class="dropdown-item 2 "  href=" ">Средний</i> </a></li>
-									   			<li ' . ajax($id, '3', $status) . '><a class="dropdown-item 3"  href=" ">Высокий</i> </a> </li>
+									  		<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+									  			<li ' . ajax($ticket_id, '1', $ticket_status) . '><a class="dropdown-item 1"  href="">Низкий</i> </a></li>
+									    		<li ' . ajax($ticket_id, '2', $ticket_status) . '><a class="dropdown-item 2 "  href="">Средний</i> </a></li>
+									   			<li ' . ajax($ticket_id, '3', $ticket_status) . '><a class="dropdown-item 3"  href="">Высокий</i> </a> </li>
 									  		</ul>
 										</div>
 
 
-							    		
+							    		<div class="dropdown col-auto">
+
+										  <a class=" " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+								    		<span class="badge ' . $badge . '" data-bs-toggle="tooltip" data-bs-placement="top" title="Изменить статус заявки"> ' . $ticket_status . '</span>
+										  </a>
+									
+									  		<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+									  			<li ' . ajax($ticket_id, $ticket_priority, 'Введен') . '><a href=""><span class="badge bg-secondary"> Введен</span></a></li>
+									    		<li ' . ajax($ticket_id, $ticket_priority, 'Закрыт') . '><a href=""><span class="badge bg-success"> Закрыт</a></span></li>
+									   			<li ' . ajax($ticket_id, $ticket_priority, 'Отложен') . '><a href=""><span class="badge bg-warning text-dark"> Отложен</a></span></li>
+									   			<li ' . ajax($ticket_id, $ticket_priority, 'Отклонен') . '><a href=""><span class="badge bg-danger"> Отклонен</a></span></li>
+									  		</ul>
+										</div>
+
 							    		<div class="col">
-							    			<div class="dropdown col-auto" id="">
-	
-											  <a class=" " href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-								    			<span class="badge bg-primary rounded-pill" data-bs-toggle="tooltip" data-bs-placement="top" title="Изменить статус заявки">' . $row['ticket_status'] .'</span>
-								    			<style>
-								    				.middle { color: #F1C232;}
-								    				.high { color: #CC0000;}
-								    			</style>
-											  </a>
-										
-									  			<ul class="dropdown-menu" id="" aria-labelledby="dropdownMenuLink">									  				
-									    			
-									   				<li ' . ajax($id, $priority, 'Введен') . '><a class="dropdown-item"  href=" "><span class="badge rounded-pill bg-warning text-dark">Введен</span> </a></li>
-									   				<li ' . ajax($id, $priority, 'Закрыт') . '><a class="dropdown-item" data-bs-toggle="modal" href="#statusCloseModal" role="button"><span class="badge bg-success">Закрыт</span> </a></li>
-									   				<li ' . ajax($id, $priority, 'Отложен') . '><a class="dropdown-item"  href=" "><span class="badge bg-secondary">Отложен</span> </a></li>
-									   				<li ' . ajax($id, $priority, 'Отклонен') . '><a class="dropdown-item"  href=" "><span class="badge rounded-pill bg-danger">Отклонен</span> </a></li>
-									  			</ul>
-											</div>
+							    			 
 							    		</div>
 							    	</div>
 							    </div>
 							</li>
 							<li class="description  d-flex justify-content-between align-items-start">						
-									<div class="ticket-date ticket-title ' . $status_check . '">
+									<div class="ticket-date ticket-title ' . $status . '">
 									    <div class="row">
 									    	<div class="col-auto">
 												<div class="date">
@@ -129,22 +144,15 @@ while ($row = $result->fetch_assoc())
 			';
 		
 		
-		if (isset($_GET['setpriority']) && $_GET['ticketid'] ) {
-			if (set_priority($_GET['setpriority'], $_GET['ticketid'])) {
+		//if (isset($_GET['setpriority']) && $_GET['ticketid'] ) {
+			//if (set_priority($_GET['setpriority'], $_GET['ticketid'])) {
 				
-			}
+			//}
 			//echo $_GET['setpriority'];
-			$_GET['setpriority'] = null;
-			$_GET['ticketid'] = null;
+			//$_GET['setpriority'] = null;
+			//$_GET['ticketid'] = null;
 			//$result = sortby();
-		}
-		if (isset($_GET['setstatus']) && isset($_GET['ticket_id'])) {
-			$setstatus = $_GET['setstatus'];
-			$id = $_GET['ticketid'];
-			set_status($id, $setstatus);
-			$_GET['setstatus'] = null;
-			$_GET['ticketid'] = null;
-		}
+		//}
    }
 
 
