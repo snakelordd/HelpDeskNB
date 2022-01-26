@@ -42,6 +42,29 @@ function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = 
 	$conn->close();
 }
 
+function insert_res($ticket_id, $resolution, $comment = null) {
+
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	if (!$comment) {
+		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution)
+		VALUES ('$ticket_id','$resolution')";
+	}
+	else {
+		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, ticket_comment)
+		VALUES ('$ticket_id','$resolution', '$comment')";
+	}
+	if ($conn->query($sql) === TRUE) {
+	    return true; //echo "New record created successfully";
+	} else {
+	    echo "Error: " . $sql . "<br>" . $conn->error;
+	}
+
+	$conn->close();
+}
+
 function get_ticket($client_id, $sql = null) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	if ($conn->connect_error) {
@@ -306,8 +329,13 @@ function auth($host) {
 	
 }
 
-function ajax($ticket_id, $priority, $status) {
-	return 'onClick="myFu(' . $ticket_id .',' . $priority . ', \'' . $status . '\');"';
+function ajax($ticket_id, $priority) {
+	if (strlen($priority) <= 1) {
+		return 'onClick="myFu(' . $ticket_id .',' . $priority . ');"';
+	}
+	else {
+		return 'onClick="setStatus(' . $ticket_id .  ', \'' . $priority . '\');"';
+	}
 }
 
 ?>

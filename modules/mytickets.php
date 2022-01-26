@@ -26,7 +26,10 @@ if (isset($_GET['sort'])) {
 ?>
 
 	<DIV class="content">
-		<DIV class="container">
+		<DIV class="container" id="container">
+			<div id="modalclose">
+				
+			</div>
 			<div class="row page_header">	
 				<ul>	
 					<li><h3><i class="bi bi-list-task"></i> Все заявки   </h3></li>
@@ -43,7 +46,7 @@ if (isset($_GET['sort'])) {
 			<div class="row">
 				<div class="col-auto">
 					<div class="dropdown">
-					  <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					  <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
 					    Сортировать
 					  </button>
 					  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -66,7 +69,7 @@ if (isset($_GET['sort'])) {
 					  			<input type="email" class="form-control form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp">
 					  		</div>
 					    	<div class="col">
-					    		<button type="submit" class="btn btn-sm btn-secondary">Найти</button>
+					    		<button type="submit" class="btn btn-sm btn-light">Найти</button>
 					    	</div>					  		
 					  	</div>
 					    

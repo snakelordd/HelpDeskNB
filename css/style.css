@@ -1,5 +1,5 @@
 html {
-	font-size: 18px;
+	font-size: 16px;
 }
 
 .content {
@@ -158,7 +158,7 @@ textarea {
 
 }
 .checked a {
-	color: #222;
+	color: #0B5394;
 	text-decoration: none;
 }
 
@@ -207,7 +207,7 @@ textarea {
 
 
 .ticket-date {
-	font-size: 0.7em;
+	font-size: 0.8em;
 }
 
 .shortline {
@@ -238,4 +238,9 @@ textarea {
 
 .notification-checked {
 	display: none;
+}
+
+.btn-light {
+	color: white;
+	background-color: #0B5394;
 }
