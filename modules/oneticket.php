@@ -1,6 +1,6 @@
 <?php
 include_once 'functions.php';
-
+include_once 'tabs.php';
 
 $result = sortby();
 
@@ -9,6 +9,23 @@ if ($result == 'empty') {
 	exit;
 }
 
+if (isset($_POST['res'])) {
+	$id = $_GET['id'];
+	//$id = '39';
+	$resolution = $_POST['res'];
+	if (isset($_POST['comment'])) {
+		$comment = $_POST['comment'];
+		if (insert_res($id, $resolution, $comment)) {
+			//set_status('Закрыт', $id);		
+		}
+	}
+	else {
+		if(insert_res($id, $resolution)) {
+			//tab_advice('Заявка успешно закрыта', '<i class="bi bi-check-square-fill"></i>');
+			//set_status('Закрыт', $id);
+		}
+	}
+}
 
 
 //var_dump($result);
@@ -40,15 +57,16 @@ while ($row = $result->fetch_assoc())
 		//$priority = '<i class="bi bi-exclamation-circle-fill high" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i><style>.high { color: #CC0000;}</style>';
 	}
 	
-	if ($ticket_status !== 'Открыт') {
+	if ($ticket_status != 'Открыт') {
 		$status = 'checked';
 	}
+	else ($status = 'new');
 	if ($ticket_status == 'Закрыт') {
 		$closed_flag = 'd-none';
 		set_priority(0, $ticket_id);
 		$actions = '<li ' . ajax($ticket_id, 'Введен') . '><a class="dropdown-item"  href="">Возобновить</i> </a> </li>';
 	}
-	else ($status = 'new');
+	
 	switch ($ticket_status) {
 		case 'Открыт':
 			$badge = 'bg-primary rounded-pill';

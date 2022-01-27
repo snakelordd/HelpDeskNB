@@ -47,6 +47,25 @@
     	});
 	}
 
+	function setResolution(id, resolution, comment){
+		if ($comment == undefined) {
+			$comment = null;
+		}
+        $.ajax({
+        	type: "POST",
+        	url: "/modules/modal.php/", // Скрипт который будет делать выборку по нужному id
+        	dataType: "html", // это прочитаете в мануалах
+        	timeout: 50000, // это тоже
+        	data:{id:id, resolution:resolution, comment:comment}, // передаем пхп скрипту нужный id города
+        	success: function(data) {
+        	                //$('#t_'+id).html(data); // Собственно, добавляем результат на страниуцу
+        	},
+        	error: function(request, status, errorT) {
+        	     alert('Произошел сбой. Запрос не может быть выполнен. Повторите попытку.');
+        	}
+    	});
+	}
+
 	function ModalToggleId($id) {
 		
 			$newid = "scm_" + $id;

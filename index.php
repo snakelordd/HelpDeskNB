@@ -19,5 +19,9 @@ else {
 }
 
 
+?>
 
+
+
+<?php
 include_once 'modules/footer.php';

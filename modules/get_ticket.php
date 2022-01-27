@@ -100,7 +100,7 @@ if ($id && $ticket_status){
 			      </div>
 			      <div class="modal-footer">
 			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-			        <a class="btn btn-success" href=" " ' . ajax($ticket_id, 'Закрыт') . '>Закрыть заявку</a>
+			        <a class="btn btn-success" href=" " ' . ajax($id, 'Закрыт') . '>Закрыть заявку</a>
 			      </div>
 			    </div>
 			  </div>
@@ -170,7 +170,7 @@ if ($id && $ticket_status){
 									
 									  		<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
 									  			<li ' . ajax($ticket_id, 'Введен') . '><a class="dropdown-item" href="">Введен</a></li>
-									    		<li ' . ajax($ticket_id, 'Закрыт') . '><a class="dropdown-item" data-bs-toggle="modal" href="#statusCloseModal" role="button">Закрыт</a></li>
+									    		<li ><a class="dropdown-item" data-bs-toggle="modal" href="#statusCloseModal" role="button">Закрыт</a></li>
 									   			<li ' . ajax($ticket_id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
 									   			<li ' . ajax($ticket_id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
 									  		</ul>
