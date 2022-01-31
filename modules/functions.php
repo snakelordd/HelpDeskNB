@@ -34,12 +34,17 @@ function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = 
 		VALUES ('$client_id', '$t_category', '$t_theme', '$t_problem')";
 	}
 	if ($conn->query($sql) === TRUE) {
+		$ticket_id = get_tid($client_id, $t_category, $t_theme, $t_problem);
+		insert_res($ticket_id, 'ОТКРЫТ', 'Статус заявки изменен');
+		$conn->close();
 	    return true; //echo "New record created successfully";
 	} else {
 	    echo "Error: " . $sql . "<br>" . $conn->error;
 	}
 
-	$conn->close();
+
+	
+
 }
 
 function insert_res($ticket_id, $resolution, $comment = null) {
@@ -228,12 +233,13 @@ function set_status($status, $ticket_id) {
 	$sql = "UPDATE tickets SET ticket_status = '$status' WHERE ticket_id = '$ticket_id'";
 
 	if ($conn->query($sql) === TRUE) {
+	insert_res($ticket_id, $status, 'Статус заявки изменен');
+	$conn->close();
 	return true; //echo "New record created successfully";
 	} else {
 	    echo "Error: " . $sql . "<br>" . $conn->error;
 	}
-	$conn->close();
-
+	
 }
 
 function get_ip() {
@@ -286,11 +292,13 @@ function set_priority($priority, $ticket_id) {
 	$sql = "UPDATE tickets SET ticket_priority = '$priority' WHERE ticket_id = '$ticket_id'";
 
 	if ($conn->query($sql) === TRUE) {
+	insert_res($ticket_id, $priority, 'Приоритет заявки изменен');
+	$conn->close();
 	return true; //echo "New record created successfully";
 	} else {
 	    echo "Error: " . $sql . "<br>" . $conn->error;
 	}
-	$conn->close();
+	
 
 }
 

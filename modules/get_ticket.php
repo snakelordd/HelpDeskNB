@@ -1,8 +1,8 @@
 <?php
 include_once 'functions.php';
 
-if (isset($_POST['id'])) {
-	$id = $_POST['id'];
+if (isset($_GET['id'])) {
+	$id = $_GET['id'];
 	$result = get_one_ticket($id);
 	$row = $result->fetch_assoc();
 }
@@ -11,24 +11,24 @@ if ($result == 'empty') {
 	echo '<div class="row"><div class="col"><p>Заявок не найдено</p></div></div>';
 	exit;
 }
-if (isset($_POST['priority'])) {
-	$priority = $_POST['priority'];
+if (isset($_GET['priority'])) {
+	$priority = $_GET['priority'];
 }
 else {
 	$priority = $row['ticket_priority'];
 }
 
-if ($id && $priority ) {
+if ($id && $_GET['priority'] ) {
 	if (set_priority($priority, $id)) {		
 	}
 }
-if (isset($_POST['status'])) {
-	$ticket_status = $_POST['status'];
+if (isset($_GET['status'])) {
+	$ticket_status = $_GET['status'];
 }
 else {
 	$ticket_status = $row['ticket_status'];
 }
-if ($id && $ticket_status){
+if ($id && $_GET['status']){
 	set_status($ticket_status, $id);
 }
 
@@ -53,19 +53,19 @@ if ($id && $ticket_status){
 	}
 	else $status = 'new';
 	switch ($ticket_status) {
-		case 'Открыт':
+		case 'ОТКРЫТ':
 			$badge = 'bg-primary rounded-pill';
 			break;
-		case 'Закрыт':
+		case 'ЗАКРЫТ':
 			$badge = 'bg-success';
 			break;
-		case 'Отложен':
+		case 'ОТЛОЖЕН':
 			$badge = 'bg-warning text-dark';
 			break;
-		case 'Отклонен':
+		case 'ОТКЛОНЕН':
 			$badge = 'bg-danger';
 			break;	
-		case 'Введен':
+		case 'В РАБОТЕ':
 			$badge = 'bg-secondary';
 			break;	
 		default:
@@ -93,7 +93,7 @@ if ($id && $ticket_status){
 						</div>	
 						<div class="col">
 							<div class="mb-3">
- 								<input type="email" class="form-control"  placeholder="Комментарий (необязательно) ' . $ticket_id . '">
+ 								<input type="email" class="form-control"  placeholder="Комментарий (необязательно) ' . $id . '">
 							</div>
 						</div>
 					</div>
@@ -107,7 +107,7 @@ if ($id && $ticket_status){
 			</div>
 
 
-       			<div class="row  ' . $status . '" id="t_' . $row['ticket_id'] . '">
+       			<div class="row  ' . $status . '" id="t_' . $id . '">
 				<div class="col ticket" >
 					<p></p>
 					<div class="list-group">
@@ -118,13 +118,13 @@ if ($id && $ticket_status){
 
 							    		<div class="col-auto">
 									    	<div class="ticket_id">
-									    		<a href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '"><i class="bi bi-tag-fill"></i> Заявка <b>#' . $row['ticket_id']  .  '</b></a> 
+									    		<a href="' . get_url('modules/ticket.php') . '?id=' . $id . '"><i class="bi bi-tag-fill"></i> Заявка <b>#' . $id .  '</b></a> 
 									    	</div> 			
 							    		</div>
 
 							    	</div>
 							    	<div class="row ticket-title ticket_list">
-										<a class="' . $status . '"href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '">' .  $theme  .
+										<a class="' . $status . '"href="' . get_url('modules/ticket.php') . '?id=' . $id . '">' .  $theme  .
 									'</div>
 							    </div>
 							    <div>
@@ -141,9 +141,9 @@ if ($id && $ticket_status){
 										  </a>
 									
 									  		<ul class="dropdown-menu ' . $closed_flag . ' " aria-labelledby="dropdownMenuLink">
-									  			<li ' . ajax($ticket_id, '1') . '><a class="dropdown-item 1"  href="">Низкий</i> </a></li>
-									    		<li ' . ajax($ticket_id, '2') . '><a class="dropdown-item 2 "  href="">Средний</i> </a></li>
-									   			<li ' . ajax($ticket_id, '3') . '><a class="dropdown-item 3"  href="">Высокий</i> </a> </li>
+									  			<li ' . ajax($id, '1') . '><a class="dropdown-item 1"  href="">Низкий</i> </a></li>
+									    		<li ' . ajax($id, '2') . '><a class="dropdown-item 2 "  href="">Средний</i> </a></li>
+									   			<li ' . ajax($id, '3') . '><a class="dropdown-item 3"  href="">Высокий</i> </a> </li>
 									  		</ul>
 										</div>
 
@@ -169,10 +169,10 @@ if ($id && $ticket_status){
 										  </a>
 									
 									  		<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
-									  			<li ' . ajax($ticket_id, 'Введен') . '><a class="dropdown-item" href="">Введен</a></li>
+									  			<li ' . ajax($id, 'В РАБОТЕ') . '><a class="dropdown-item" href="">В работе</a></li>
 									    		<li ><a class="dropdown-item" data-bs-toggle="modal" href="#statusCloseModal" role="button">Закрыт</a></li>
-									   			<li ' . ajax($ticket_id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
-									   			<li ' . ajax($ticket_id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
+									   			<li ' . ajax($id, 'ОТЛОЖЕН') . '><a class="dropdown-item" href="">Отложен</a></li>
+									   			<li ' . ajax($id, 'ОТКЛОНЕН') . '><a class="dropdown-item" href="">Отклонен</a></li>
 									  		</ul>
 										</div>
 							    	</div>
@@ -183,7 +183,7 @@ if ($id && $ticket_status){
 									    <div class="row">
 									    	<div class="col-auto">
 												<div class="date">
-													<a href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '"> '  . $normaldate . '</a>
+													<a href="' . get_url('modules/ticket.php') . '?id=' . $id . '"> '  . $normaldate . '</a>
 												</div>									    				
 									    	</div>
 									    	<div class="col-auto">

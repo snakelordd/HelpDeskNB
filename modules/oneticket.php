@@ -57,31 +57,33 @@ while ($row = $result->fetch_assoc())
 		//$priority = '<i class="bi bi-exclamation-circle-fill high" id="" data-bs-toggle="tooltip" data-bs-placement="top" title="Назначить приоритет"></i><style>.high { color: #CC0000;}</style>';
 	}
 	
-	if ($ticket_status != 'Открыт') {
+	if ($ticket_status != 'ОТКРЫТ') {
 		$status = 'checked';
 	}
 	else ($status = 'new');
-	if ($ticket_status == 'Закрыт') {
+	if ($ticket_status == 'ЗАКРЫТ') {
 		$closed_flag = 'd-none';
-		set_priority(0, $ticket_id);
-		$actions = '<li ' . ajax($ticket_id, 'Введен') . '><a class="dropdown-item"  href="">Возобновить</i> </a> </li>';
+		if ($ticket_priority != 0) {	
+			set_priority(0, $ticket_id);
+		}
+		$actions = '<li ' . ajax($ticket_id, 'В РАБОТЕ') . '><a class="dropdown-item"  href="">Возобновить</i> </a> </li>';
 	}
 	
 	switch ($ticket_status) {
-		case 'Открыт':
+		case 'ОТКРЫТ':
 			$badge = 'bg-primary rounded-pill';
 			break;
-		case 'Закрыт':
-			$badge = 'bg-success';
-			break;
-		case 'Отложен':
+		case 'ЗАКРЫТ':
 			$badge = 'bg-secondary';
 			break;
-		case 'Отклонен':
+		case 'ОТЛОЖЕН':
+			$badge = 'bg-warning text-dark';
+			break;
+		case 'ОТКЛОНЕН':
 			$badge = 'bg-danger';
 			break;	
-		case 'Введен':
-			$badge = 'bg-warning text-dark';
+		case 'В РАБОТЕ':
+			$badge = 'bg-success';
 			break;	
 		default:
 			//$badge = 'bg-primary rounded-pill';
@@ -151,10 +153,10 @@ while ($row = $result->fetch_assoc())
 										  </a>
 									
 									  		<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
-									  			<li ' . ajax($ticket_id, 'Введен') . '><a class="dropdown-item" href="">Введен</a></li>
+									  			<li ' . ajax($ticket_id, 'В РАБОТЕ') . '><a class="dropdown-item" href="">В работе</a></li>
 									    		<li ><a class="dropdown-item" data-bs-toggle="modal" href="#scm_' . $ticket_id . '" role="button">Закрыт</a></li>
-									   			<li ' . ajax($ticket_id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
-									   			<li ' . ajax($ticket_id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
+									   			<li ' . ajax($ticket_id, 'ОТЛОЖЕН') . '><a class="dropdown-item" href="">Отложен</a></li>
+									   			<li ' . ajax($ticket_id, 'ОТКЛОНЕН') . '><a class="dropdown-item" href="">Отклонен</a></li>
 									  		</ul>
 										</div>
 							    	</div>

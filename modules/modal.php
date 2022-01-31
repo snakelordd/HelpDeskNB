@@ -36,7 +36,7 @@ echo '
 			      </div>
 			      <div class="modal-footer">
 			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-			        <button type="submit" class="btn btn-success" data-bs-dismiss="modal" ' . ajax($id, 'Закрыт') . '>Закрыть заявку</button>
+			        <button type="submit" class="btn btn-success" data-bs-dismiss="modal" ' . ajax($id, 'ЗАКРЫТ') . '>Закрыть заявку</button>
 			      </div>
 			     </form>
 			    </div>
