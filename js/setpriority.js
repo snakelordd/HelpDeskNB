@@ -33,13 +33,13 @@
     	});
 	}
 
-	function ModalSC(id){
+	function ModalSC(id, modaltype){
         $.ajax({
         	type: "GET",
         	url: "/modules/modal.php/", // Скрипт который будет делать выборку по нужному id
         	dataType: "html", // это прочитаете в мануалах
         	timeout: 50000, // это тоже
-        	data:{id:id}, // передаем пхп скрипту нужный id города
+        	data:{id:id, modaltype:modaltype}, // передаем пхп скрипту нужный id города
         	success: function(data) {
         	                $('#modalclose').html(data); // Собственно, добавляем результат на страниуцу
         	},
@@ -80,8 +80,6 @@
 	function refreshPage(){
     	window.location.reload();
 	} 
-
-
 
 
 

@@ -9,8 +9,9 @@ $host = get_ip();
 
 //if (get_ip() == '127.0.0.1') {
 if (auth($host)) {
-
+    echo ($_SESSION['host_id']);
     include_once "modules/header.php";
+
 }
 
 else {

@@ -53,23 +53,26 @@ if ($id && $_GET['status']){
 	}
 	else $status = 'new';
 	switch ($ticket_status) {
-		case 'ОТКРЫТ':
-			$badge = 'bg-primary rounded-pill';
+		case 'Открыт':
+			$badge = 'bg-primary';
 			break;
-		case 'ЗАКРЫТ':
-			$badge = 'bg-success';
+		case 'Закрыт':
+			$badge = 'bg-secondary';
 			break;
-		case 'ОТЛОЖЕН':
+		case 'Отложен':
 			$badge = 'bg-warning text-dark';
 			break;
-		case 'ОТКЛОНЕН':
+		case 'Отклонен':
 			$badge = 'bg-danger';
 			break;	
-		case 'В РАБОТЕ':
-			$badge = 'bg-secondary';
+		case 'В работе':
+			$badge = 'bg-success';
+			break;	
+		case 'Удален':
+			$badge = 'bg-danger';
 			break;	
 		default:
-			//$badge = 'bg-primary rounded-pill';
+			$badge = 'bg-danger';
 			break;
 	}
        echo  '	
@@ -169,10 +172,10 @@ if ($id && $_GET['status']){
 										  </a>
 									
 									  		<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
-									  			<li ' . ajax($id, 'В РАБОТЕ') . '><a class="dropdown-item" href="">В работе</a></li>
+									  			<li ' . ajax($id, 'В работе') . '><a class="dropdown-item" href="">В работе</a></li>
 									    		<li ><a class="dropdown-item" data-bs-toggle="modal" href="#statusCloseModal" role="button">Закрыт</a></li>
-									   			<li ' . ajax($id, 'ОТЛОЖЕН') . '><a class="dropdown-item" href="">Отложен</a></li>
-									   			<li ' . ajax($id, 'ОТКЛОНЕН') . '><a class="dropdown-item" href="">Отклонен</a></li>
+									   			<li ' . ajax($id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
+									   			<li ' . ajax($id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
 									  		</ul>
 										</div>
 							    	</div>
@@ -206,4 +209,5 @@ if ($id && $_GET['status']){
 			</div>
 			
 			';
+	
 	

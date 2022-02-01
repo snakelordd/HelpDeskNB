@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include_once 'config.php';
 
 
@@ -35,7 +35,7 @@ function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = 
 	}
 	if ($conn->query($sql) === TRUE) {
 		$ticket_id = get_tid($client_id, $t_category, $t_theme, $t_problem);
-		insert_res($ticket_id, 'ОТКРЫТ', 'Статус заявки изменен');
+		insert_res($ticket_id, 'Открыт', 'Статус заявки изменен');
 		$conn->close();
 	    return true; //echo "New record created successfully";
 	} else {
@@ -48,18 +48,21 @@ function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = 
 }
 
 function insert_res($ticket_id, $resolution, $comment = null) {
-
+	if (isset($_SESSION['host_id'])) {
+		$client_id = $_SESSION['host_id'];
+	}
+	else $client_id = null;
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	if ($conn->connect_error) {
 	    die("Connection failed: " . $conn->connect_error);
 	}
 	if (!$comment) {
-		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution)
-		VALUES ('$ticket_id','$resolution')";
+		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, client_id)
+		VALUES ('$ticket_id','$resolution', '$client_id')";
 	}
 	else {
-		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, ticket_comment)
-		VALUES ('$ticket_id','$resolution', '$comment')";
+		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, ticket_comment, client_id)
+		VALUES ('$ticket_id','$resolution', '$comment', '$client_id')";
 	}
 	if ($conn->query($sql) === TRUE) {
 	    return true; //echo "New record created successfully";
@@ -129,7 +132,12 @@ function sortby() {
 		$sort = $_SESSION['sort'];
 	}
 	else {
-		$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
+		if ($host == 'admin') {
+			$sql = "SELECT * FROM `tickets` ORDER BY t_date DESC";
+		}
+		else {
+			$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY t_date DESC";
+		}
 		$result = get_allTickets($sql);
 		if (!$result) {
 			echo 'err';
@@ -202,6 +210,33 @@ function sortby() {
 			return $result;
 			break;
 	}
+}
+
+function select($select, $param) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	switch ($select) {
+		case 'category':
+			$sql = "SELECT * FROM `tickets` WHERE `ticket_category` = '$param' ";
+			break;
+		case 'author':
+			$sql = "SELECT * FROM `tickets` WHERE `client_id` = '$param' ";
+
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$result = mysqli_query($conn, $sql);
+	if(mysqli_num_rows($result) > 0)
+	{
+	    $conn->close();
+	    return $result;
+	}
+	else {
+		$conn->close();
+		return 'empty';
+	}		
 }
 
 function get_tid($client_id, $t_category, $t_theme, $t_problem) {
