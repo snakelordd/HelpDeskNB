@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+
+$_SESSION['success'] = '';
 include_once 'functions.php';
 if (isset($_SESSION['host']) && isset($_SESSION['host_id'])) {
 
@@ -48,6 +50,15 @@ if (isset($_GET['sort'])) {
 				  </ol>
 				</nav>
 			</div>
+			<div class="row">
+				<div class="col">
+					<?php if ($_SESSION['message'] == 'success') 
+					{
+					 	//tab_advice('Заявка успешно создана. Статус заявки можно посмотреть здесь', '<i class="bi bi-check-square-fill"></i>');
+					 	//$_SESSION['message']=''; 
+					} ?>
+				</div>
+			</div>
 			<div class="row d-flex justify-content-between align-items-start mb-4">
 				<div class="col-auto">
 					<div class="row">
@@ -55,27 +66,36 @@ if (isset($_GET['sort'])) {
 							<div class="dropdown">
 							  <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
 							    <?php 
-							    					    
-							    if (isset($_GET['show'])) {
-							    	$show = $_GET['show'];
-							    	switch ($show) {
-							    		case 'opened':
-							    			$show = 'Открытые запросы';
-							    			break;
-							    		case 'closed':
-							    			$show = 'Закрытые запросы';
-							    			break;
-							    		case 'all':
-							    			$show = 'Все запросы';
-							    			break;	
-							    		default:
-							    			$show = 'Открытые запросы';
-							    			break;
-							    	}
+
+							    if (isset($_SESSION['show'])) {
+							    	$show = $_SESSION['show'];
 							    }
 							    else {
-							    	$show = 'Открытые запросы';
+							    	$_SESSION['show'] = 'opened';
+							    	$show = $_SESSION['show'];
+							    }			    
+							    if (isset($_GET['show'])) {
+							    	$_SESSION['show'] = $_GET['show'];
+							    	$show = $_GET['show'];
 							    }
+							    
+							    
+							    switch ($show) {
+							    	case 'opened':
+							    		$show = 'Открытые запросы';
+							    		break;
+							    	case 'closed':
+							    		$show = 'Закрытые запросы';
+							    		break;
+							    	case 'all':
+							    		$show = 'Все запросы';
+							    		break;	
+							    	default:
+							    		$show = 'Открытые запросы';
+							    		break;
+							    }
+							    
+							    
 							    echo $show;
 							    ?>
 		
@@ -100,6 +120,7 @@ if (isset($_GET['sort'])) {
 								    <li><a class="dropdown-item" href="<?php echo get_url('modules/mytickets.php');?>?sort=status">по статусу заявки</a></li>
 								    <?php if (get_client_id($_SESSION['host']) == 'admin') { 
 								    	echo '<li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="' . get_url('modules/mytickets.php') . '?sort=author">по автору</a></li>';
+								    	echo '<li><li><a class="dropdown-item" href="' . get_url('modules/mytickets.php') . '?sort=holder">по исполнителю</a></li>';
 			
 								    } ?>
 								  </ul>
@@ -108,7 +129,7 @@ if (isset($_GET['sort'])) {
 						<div class="col-auto">
 						<div class="row">
 							<div class="col-auto">
-								<input type="text" class="form-control form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp">
+								<input type="text" class="form-control form-control-sm ticketSearch" id="ticketSearch" name="ticketSearch" aria-describedby="ticketSearch">
 							</div>
 							<div class="col">
 								<button type="submit" class="btn btn-sm btn-light">Найти</button>
@@ -117,12 +138,13 @@ if (isset($_GET['sort'])) {
 					</div>	
 					</div>
 				</div>	
-			</div>		
+			</div>	
+			<div class="alltickets" id="alltickets">
 			<?php include_once 'oneticket.php'; ?>	
 				<!-- Ticket -->
 
-					
 
+			</div>
 				<!--  -->
 		</DIV>
 	</DIV>
@@ -133,3 +155,4 @@ if (isset($_GET['sort'])) {
 		})
 	</script>
 	<script type="text/javascript" src="<?php echo get_url("js/setpriority.js")?>"></script>
+	<script type="text/javascript" src="<?php echo get_url("js/script.js")?>"></script>

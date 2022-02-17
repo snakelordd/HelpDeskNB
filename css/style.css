@@ -153,6 +153,8 @@ textarea {
 	font-size: 1.4em;
 	text-align: center;
 }
+
+
 .checked {
 	color: #0B5394;
 
@@ -243,4 +245,11 @@ textarea {
 .btn-light {
 	color: white;
 	background-color: #0B5394;
+}
+
+
+.holder {
+	font-size: 0.8em;
+	color: grey;
+	font-style: italic;
 }

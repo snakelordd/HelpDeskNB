@@ -13,24 +13,23 @@ if (isset($_POST['res'])) {
 	$id = $_GET['id'];
 	//$id = '39';
 	$resolution = $_POST['res'];
-	if (isset($_POST['comment'])) {
-		$comment = $_POST['comment'];
-		if (insert_res($id, $resolution, $comment)) {
-			//set_status('Закрыт', $id);		
+	if (isset($_POST['resolution_comment'])) {
+		$resolution_comment = $_POST['resolution_comment'];
+		print_r($resolution_comment);
+		if (insert_res($id, $resolution, 'Резолюция заявки', $resolution_comment)) {
+			$_SESSION['message'] = 'success';
 		}
+
+		
 	}
 	else {
 		if(insert_res($id, $resolution)) {
+			$_SESSION['message'] = 'success';
 			//tab_advice('Заявка успешно закрыта', '<i class="bi bi-check-square-fill"></i>');
 			//set_status('Закрыт', $id);
 		}
 	}
 }
-
-if (isset($_GET['show'])) {
-	$show = $_GET['show'];
-}
-else $show = 'opened';
 
 
 if (isset($_GET['select']) && isset($_GET['param'])) {
@@ -39,16 +38,49 @@ if (isset($_GET['select']) && isset($_GET['param'])) {
 	$result = select($select, $param);
 }
 
-//var_dump($result);
+if (isset($_POST['holder'])) {
+	$id = $_GET['id'];
+	$holder = $_POST['holder'];
+	if (isset($_POST['comment_holder'])) {
+		$comment_holder = $_POST['comment_holder'];
+		if (set_holder($id, $holder, $comment_holder)) {
+			$_SESSION['success'] = 1;
+		}
+	}
+	else {
+		if (set_holder($id, $holder)) {
+			$_SESSION['success'] = 1;
+		}
+	}
+	//set_holder($id, $holder);
+}
+
+if (isset($_GET['ticketSearch'])) {
+	$query = $_GET['ticketSearch'];
+	if (ticket_search($query)!= 'empty') {
+		 $result = ticket_search($query);
+	}
+	else {
+		echo 'no result';
+	}
+}
+
 while ($row = $result->fetch_assoc())
    {
+   	$holder_name = '';
+   	if (isset($row['ticket_holder'])) {
+	   	$holder = get_user($row['ticket_holder']);
+	   	$holder = $holder->fetch_assoc();
+	   	$holder_name = '  : ' . $holder['client_name'];
+	}
+
    	$closed_flag = ' ';
    	$phpdate = strtotime($row['t_date']);
 	$normaldate = date( 'H:i  d.m.Y ', $phpdate );
-	$actions = '<li ><a class="dropdown-item"  href="">Заблокировать</i> </a> </li>';
+	$actions = '';
    	$ticket_id = $row['ticket_id'];
    	$priority = $row['ticket_priority'];
-
+   	$ticket_holder = $row['ticket_holder'];
    	$ticket_priority = $row['ticket_priority'];
    	$ticket_status = $row['ticket_status'];
    	if ($priority==0 && $ticket_status != 'Закрыт') {
@@ -80,34 +112,51 @@ while ($row = $result->fetch_assoc())
 		$status = 'checked';
 	}
 	else ($status = 'new');
-	if ($ticket_status == 'Закрыт') {
-		$closed_flag = 'd-none';
+	if ($ticket_status == 'Закрыт' || $ticket_status =='Отклонен') {
+		if (!$query) {
+			$closed_flag = 'd-none';
+		}
 		if ($ticket_priority != 0) {	
 			set_priority(0, $ticket_id);
 		}
-		$actions = '<li ' . ajax($ticket_id, 'В РАБОТЕ') . '><a class="dropdown-item"  href="">Возобновить</i> </a> </li>';
-		if ($show == 'opened') {
+		$actions = '<li ' . ajax($ticket_id, 'В работе') . '><a class="dropdown-item"  href="">Возобновить</i> </a> </li>';
+		if ($_SESSION['show'] == 'opened') {
 			continue;
 		}
+
 	}
 	if ($ticket_status == 'Удален') {
-		continue;
+		if ($show != 'all') {
+			if (!$query) {
+				continue;		
+			}
+		}
 	}
-	if ($show == 'closed') {
-		if ($ticket_status != 'Закрыт') {
+	if ($_SESSION['show'] == 'all') {
+
+	}
+	if ($_SESSION['show'] == 'closed') {
+		if ($ticket_status != 'Закрыт' ) {
 			continue;
+		}
+		if (  $ticket_status != 'Отклонен') {
+			//continue;
 		}
 	}
 	
 	switch ($ticket_status) {
+
 		case 'Открыт':
 			$badge = 'bg-primary';
+			break;
+		case 'Введен':
+			$badge = 'bg-warning text-dark';
 			break;
 		case 'Закрыт':
 			$badge = 'bg-secondary';
 			break;
 		case 'Отложен':
-			$badge = 'bg-warning text-dark';
+			$badge = 'bg-secondary';
 			break;
 		case 'Отклонен':
 			$badge = 'bg-danger';
@@ -133,11 +182,19 @@ while ($row = $result->fetch_assoc())
 							<li class="  d-flex justify-content-between align-items-start">
 							    <div class="ticket_info">
 							    	<div class="row">
-
 							    		<div class="col-auto">
-									    	<div class="ticket_id">
-									    		<a href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '"><i class="bi bi-tag-fill"></i> Заявка <b>#' . $row['ticket_id']  .  '</b></a> 
-									    	</div> 			
+							    			<div class="row">
+							    				<div class="col-auto">
+									    			<div class="ticket_id">
+									    				<a href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '"><i class="bi bi-tag-fill"></i> Заявка <b>#' . $row['ticket_id']  .  '	</b><span class="holder   position-relative top-50 start-0">'. $holder_name .' <span class="visually-hidden">Исполнитель</span></span></a> 
+									    			</div> 			
+							    				</div>
+							    				<div class="col-auto">
+									    			<div class="holder">
+									    				
+									    			</div> 			
+							    				</div>
+							    			</div>
 							    		</div>
 
 							    	</div>
@@ -166,17 +223,24 @@ while ($row = $result->fetch_assoc())
 										</div>
 
 										<div class="dropdown col-auto">
+										'; if ($host_id == 'admin') {
+											$modal = ', \'issue\'';
+										}
+										else {
+											$modal = ', \'confirm\'';
+										}
 
-										  <a class=" new " href="#" role="button" id="" data-bs-toggle="dropdown" aria-expanded="false" onClick="ModalSC(\'' . $ticket_id . '\', \'confirm\'); ">
+										 echo '
+										  <a class=" new " href="#" role="button" id="" data-bs-toggle="dropdown" aria-expanded="false" onClick="ModalSC(' . $ticket_id . $modal . '); ">
 								    		Действия
 										  </a>
 									
 									  		<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
-									  			<li ><a class="dropdown-item"  href="">Подробнее</i> </a></li>';
+									  			<li ><a class="dropdown-item"  href="' . get_url('modules/ticket.php') . '?id=' . $row['ticket_id'] . '&type=more">Подробнее</i> </a></li>';
 									  			if ($host_id == 'admin') {
 									  				echo 
 									  			 	$actions .'
-									  				<li ><a class="dropdown-item ' . $closed_flag . '"  href="">Назначить задачу</i> </a> </li>';
+									  				<li ><a class="dropdown-item ' . $closed_flag . '" data-bs-toggle="modal" href="#scm_' . $ticket_id . '">Назначить задачу</i> </a> </li>';
 									    			
 									    		}
 									   		 
@@ -195,16 +259,26 @@ while ($row = $result->fetch_assoc())
 									  		}
 									  		echo  '>' . $ticket_status . '</span>
 										  </a>';
-
-											if ($host_id == 'admin') {
-									  		echo '
-									  		<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
-									  			<li ' . ajax($ticket_id, 'В работе') . '><a class="dropdown-item" href="">В работе</a></li>
-									    		<li ><a class="dropdown-item" data-bs-toggle="modal" href="#scm_' . $ticket_id . '" role="button">Закрыт</a></li>
-									   			<li ' . ajax($ticket_id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
-									   			<li ' . ajax($ticket_id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
-									  		</ul>';
-									  	}
+										  	if (isset($row['ticket_holder'])) {
+												if ($row['ticket_holder'] == $_SESSION['user_id']) {
+									  				echo '
+									  				<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
+									  					<li ' . ajax($ticket_id, 'В работе') . '><a class="dropdown-item" href="">В работе</a></li>
+									    				<li ><a class="dropdown-item" data-bs-toggle="modal" href="#scm_' . $ticket_id . '" role="button">Закрыт</a></li>
+									   					<li ' . ajax($ticket_id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
+									   					<li ' . ajax($ticket_id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
+									  				</ul>';
+									  			}
+									  		}
+									  		else {
+									  			echo '
+									  				<ul class="dropdown-menu ' . $closed_flag . '" aria-labelledby="dropdownMenuLink">
+									  					<li ' . ajax($ticket_id, 'В работе') . '><a class="dropdown-item" href="">В работе</a></li>
+									    				<li ><a class="dropdown-item" data-bs-toggle="modal" href="#scm_' . $ticket_id . '" role="button">Закрыт</a></li>
+									   					<li ' . ajax($ticket_id, 'Отложен') . '><a class="dropdown-item" href="">Отложен</a></li>
+									   					<li ' . ajax($ticket_id, 'Отклонен') . '><a class="dropdown-item" href="">Отклонен</a></li>
+									  				</ul>';
+									  		}
 									  	echo '
 										</div>
 							    	</div>

@@ -19,7 +19,8 @@ else {
 }
 
 if ($id && $_GET['priority'] ) {
-	if (set_priority($priority, $id)) {		
+	if (set_priority($priority, $id)) {	
+		$_SESSION['message'] = 'success';
 	}
 }
 if (isset($_GET['status'])) {
@@ -29,8 +30,16 @@ else {
 	$ticket_status = $row['ticket_status'];
 }
 if ($id && $_GET['status']){
-	set_status($ticket_status, $id);
+	if (set_status($ticket_status, $id)) {
+		$_SESSION['message'] = 'success';
+	}
+	if ($_GET['status'] == 'В работе') {
+		set_holder($id, $_SESSION['user_id']);
+	}
 }
+
+
+
 
 
    //{

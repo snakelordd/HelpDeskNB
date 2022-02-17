@@ -81,7 +81,26 @@
     	window.location.reload();
 	} 
 
+    $('.ticketSearch').bind("change keyup input click", function() {
+        if(this.value.length >= 1){
+            $.ajax({
+                type: "GET",
+                url: "/modules/oneticket.php/", // Скрипт который будет делать выборку по нужному id
+                dataType: "html", // это прочитаете в мануалах
+                timeout: 50000, // это тоже
+                data:{'ticketSearch':this.value}, // передаем пхп скрипту нужный id города
+                success: function(data) {
+                                $('#alltickets').html(data);
+                                //location.reload();
+                                 // Собственно, добавляем результат на страниуцу
+                },
+                error: function(request, status, errorT) {
+                     alert('Произошел сбой. Запрос не может быть выполнен. Повторите попытку.');
+                }
+           })
+        }
 
+    })
 
 
 

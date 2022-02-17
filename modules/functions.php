@@ -1,7 +1,7 @@
 <?php
-session_start();
-include_once 'config.php';
 
+include_once 'config.php';
+include_once 'tabs.php';
 
 function get_url($page) {
 	return HOST . "/$page";
@@ -47,7 +47,7 @@ function insert_ticket($client_id, $t_category, $t_theme, $t_problem, $t_file = 
 
 }
 
-function insert_res($ticket_id, $resolution, $comment = null) {
+function insert_res($ticket_id, $resolution, $comment = null, $resolution_comment = null) {
 	if (isset($_SESSION['host_id'])) {
 		$client_id = $_SESSION['host_id'];
 	}
@@ -56,21 +56,24 @@ function insert_res($ticket_id, $resolution, $comment = null) {
 	if ($conn->connect_error) {
 	    die("Connection failed: " . $conn->connect_error);
 	}
-	if (!$comment) {
-		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, client_id)
-		VALUES ('$ticket_id','$resolution', '$client_id')";
-	}
-	else {
+	if ($resolution_comment==null) {
 		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, ticket_comment, client_id)
 		VALUES ('$ticket_id','$resolution', '$comment', '$client_id')";
 	}
+	else {
+		$sql = "INSERT INTO resolution (ticket_id, ticket_resolution, ticket_comment, resolution_comment, client_id)
+		VALUES ('$ticket_id','$resolution', '$comment', '$resolution_comment', '$client_id')";
+	}
 	if ($conn->query($sql) === TRUE) {
+		$conn->close();
 	    return true; //echo "New record created successfully";
 	} else {
+		$conn->close();
 	    echo "Error: " . $sql . "<br>" . $conn->error;
+	    return false;
 	}
 
-	$conn->close();
+	
 }
 
 function get_ticket($client_id, $sql = null) {
@@ -205,6 +208,18 @@ function sortby() {
 			}
 			return $result;
 			break;
+		case 'holder':
+			
+			if ($_SESSION['host_id'] == 'admin') {
+				$sql = "SELECT * FROM `tickets` ORDER BY ticket_holder, t_date DESC";
+				$result = get_allTickets($sql);
+			}
+			else {
+				$sql = "SELECT * FROM `tickets` WHERE client_id = '$host' ORDER BY ticket_status, t_date DESC";
+				$result = get_ticket($host, $sql);
+			}
+			return $result;
+			break;
 		default:
 			$result = get_ticket($_SESSION['host_id']);
 			return $result;
@@ -282,12 +297,18 @@ function get_ip() {
 }
 
 function get_client_id($ip) {
+	if (strlen($ip) > 6) {
+		$sql = "SELECT `client_id` FROM `clients` WHERE `client_ip` =  '$ip' ";
+	}
+	else {
+		$sql = "SELECT `client_id` FROM `clients` WHERE `id` =  '$ip' ";
+	}
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	if ($conn->connect_error) {
 	    die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "SELECT `client_id` FROM `clients` WHERE `client_ip` =  '$ip' ";
+	
 	$result = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_array($result); 
 	//while ($row = mysqli_fetch_array($result)) {
@@ -298,6 +319,35 @@ function get_client_id($ip) {
 
 }
 
+function get_user_id($ip) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	//$query = trim($query); 
+    //$query = mysqli_real_escape_string($conn, $query);
+
+
+	$sql = "SELECT `id`
+          FROM `clients` 
+          WHERE `client_id` LIKE '%$ip%'
+          OR `client_name` LIKE '%$ip%' 
+          OR `client_ip` LIKE '%$ip%'";
+
+	
+
+	$result = mysqli_query($conn, $sql);
+	
+	if(mysqli_num_rows($result) > 0)
+	{
+	    $conn->close();
+	    return $result->fetch_array();
+	}
+	else {
+		$conn->close();
+		return 'empty';
+	}	
+}
 function set_client_id($ip, $id) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	// Check connection
@@ -337,9 +387,13 @@ function set_priority($priority, $ticket_id) {
 
 }
 
+
 function auth($host) {
 	if (isset($_SESSION["host"])) {		
 		if ($_SESSION["host"] == $host) {
+			 $user = get_user($host);
+			 $row = $user->fetch_assoc();		 
+			 $_SESSION['user_id'] = $row['id'];
 			$_SESSION["host_id"] = get_client_id($host);
 			$_SESSION["auth"] = true;
 			return true;
@@ -381,4 +435,96 @@ function ajax($ticket_id, $priority) {
 	}
 }
 
-?>
+function get_user($query) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	//$query = trim($query); 
+    //$query = mysqli_real_escape_string($conn, $query);
+
+
+	$sql = "SELECT *
+          FROM `clients` 
+          WHERE `id` LIKE '%$query%' 
+          OR `client_id` LIKE '%$query%'
+          OR `client_name` LIKE '%$query%' 
+          OR `client_last_name` LIKE '%$query%'
+          OR `client_ip` LIKE '%$query%'";
+
+	
+
+	$result = mysqli_query($conn, $sql);
+	
+	if(mysqli_num_rows($result) > 0)
+	{
+	    $conn->close();
+	    return $result;
+	}
+	else {
+		$conn->close();
+		return 'empty';
+	}	
+}
+
+function set_holder($ticket_id, $holder, $res_comment=NULL) {
+
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	$sql = "UPDATE tickets SET ticket_holder = '$holder' WHERE ticket_id = '$ticket_id'";
+
+	if ($conn->query($sql) === TRUE) {
+	$conn->close();
+	
+	if ($res_comment != NULL) {
+		insert_res($ticket_id, $holder, 'Назначен исполнитель', $res_comment);	
+	}
+	else {
+		insert_res($ticket_id, $holder, 'Назначен исполнитель');
+	}
+	return true; 
+
+	} 
+	else {
+	    echo "Error: " . $sql . "<br>" . $conn->error;
+	}
+}
+
+function ticket_search($query) {
+	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	}
+	//$query = trim($query); 
+    //$query = mysqli_real_escape_string($conn, $query);
+
+
+	$sql = "SELECT *
+          FROM `tickets` 
+          WHERE `ticket_id` LIKE '%$query%' 
+          OR `client_id` LIKE '%$query%'
+          OR `ticket_category` LIKE '%$query%' 
+          OR `ticket_theme` LIKE '%$query%'
+          OR `ticket_problem` LIKE '%$query%'
+          OR `ticket_file` LIKE '%$query%'
+          OR `t_date` LIKE '%$query%'
+          OR `ticket_holder` LIKE '%$query%' 
+          ORDER BY ticket_status, t_date DESC";
+
+	
+
+	$result = mysqli_query($conn, $sql);
+	
+	if(mysqli_num_rows($result) > 0)
+	{
+	    $conn->close();
+	    return $result;
+	}
+	else {
+		$conn->close();
+		return 'empty';
+	}	
+
+}
